@@ -3,7 +3,7 @@ var argv = require('optimist').argv,
   fs = require('fs'),
   _ = require('underscore'),
   subhub = require('../lib/subhub'),
-  config = JSON.parse(fs.readFileSync(argv.c || './config.json'));
+  config = JSON.parse(fs.readFileSync(argv.c || (process.cwd() + '/config.json')));
 
 if (argv.h) {
   console.log('Usage: subhub', '\n');
