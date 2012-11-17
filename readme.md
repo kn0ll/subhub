@@ -8,16 +8,26 @@ a simple interface and client for subscribing to a pubsubhubbub hub.
 $ npm install -g node-subhub
 $ subhub -c /path/to/config.json
 creating subhub client
-creating http handler for /callback
-starting http server on port 80
+creating http handlers for undefined
 requesting pubsub subscription
-subscription request responded 204
+subscription request responded 204 
 [stream of messages]
 ```
 
 ## creating a configuration
 
-your configuration file should be a JSON definition with the following required keys
+```
+{
+  "hub": "",
+  "subscription": {
+    "hub.mode": "subscribe",
+    "hub.verify": "sync",
+    "hub.callback": "",
+    "hub.topic": ""
+  }
+}
+```
+arbitrary data can be included in `subscription` to send to the server with the initial subscription request, but all of the keys in the sample configuration are required.
 
 - `hub` - the url to the hub you are subscribing to
 - `hub.callback` - the fully qualified domain name for your subscription callback. the hostname should match the name of the host running subhub, but the actual path to the callback can be arbitrary as it's created dynamically
@@ -30,21 +40,19 @@ $ npm install node-subhub
 ```
 
 ```
-var _ = require('underscore'),
-  subhub = require('node-subhub')
+var fs = require('fs'),
+  express = require('express'),
+  subhub = require('../lib/subhub'),
+  config = JSON.parse(fs.readFileSync('./config.json')),
+  app = express(),
+  firehose = new subhub(config);
 
-var client = new subhub({
-  'hub': 'http://yourhub/',
-  'hub.callback': 'http://hostname/callback',
-  'hub.topic': 'http://feedurl/'
+app.use(firehose.middleware());
+app.listen(80);
+
+firehose.on('data', function(doc) {
+  console.log(doc);
 });
 
-client.on('data', function(doc) {
-  var entries = _(_.flatten([doc.feed.entry]));
-  entries.each(function(entry) {
-    console.log(entry.title);
-  });
-});
-
-client.listen(80);
+firehose.subscribe();
 ```

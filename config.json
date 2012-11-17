@@ -1,0 +1,9 @@
+{
+  "hub": "",
+  "subscription": {
+    "hub.mode": "subscribe",
+    "hub.verify": "sync",
+    "hub.callback": "",
+    "hub.topic": ""
+  }
+}
