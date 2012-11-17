@@ -7,6 +7,12 @@ a simple interface and client for subscribing to a pubsubhubbub hub.
 ```
 $ npm install -g node-subhub
 $ subhub -c /path/to/config.json
+creating subhub client
+creating http handler for /callback
+starting http server on port 80
+requesting pubsub subscription
+subscription request responded 204
+[stream of messages]
 ```
 
 ## creating a configuration
