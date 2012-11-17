@@ -1,0 +1,22 @@
+{
+  "author": "catshirt",
+  "name": "node-subhub",
+  "description": "simple pubsubhubbub client",
+  "url": "http://github.com/catshirt/node-subhub",
+  "keywords": ["pubsub", "pubsubhubbub"],
+  "author": "catshirt <caden@catshirt.org>",
+  "dependencies": {
+    "colors": "0.6.0-1",
+    "express": "3.0.3",
+    "feedparser": "0.10.8",
+    "optimist": "0.3.5",
+    "request": "2.12.0",
+    "underscore": "1.4.2",
+    "xml2json": "0.3.2"
+  },
+  "bin": {
+    "subhub": "./bin/subhub"
+  },
+  "main": "./lib/subhub",
+  "version": "0.0.3"
+}

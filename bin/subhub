@@ -1,0 +1,25 @@
+#!/usr/bin/env node
+var argv = require('optimist').argv,
+  fs = require('fs'),
+  _ = require('underscore'),
+  subhub = require('../lib/subhub'),
+  config = JSON.parse(fs.readFileSync(argv.c || './config.json'));
+
+if (argv.h) {
+  console.log('Usage: subhub', '\n');
+  console.log('Arguments:');
+  console.log('  -h Help. You\'re looking at it');
+  console.log('  -c Config file [./config.json]');
+  process.exit(-1);
+};
+
+var client = new subhub(config);
+
+client.on('data', function(doc) {
+  var entries = _(_.flatten([doc.feed.entry]));
+  entries.each(function(entry) {
+    console.log(entry.title);
+  });
+});
+
+client.listen(argv.p || 8000);
