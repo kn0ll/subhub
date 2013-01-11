@@ -1,0 +1,120 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Subhub by catshirt</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Subhub</h1>
+        <p>a simple nodejs interface and client for subscribing to pubsubhubbub hubs</p>
+
+        <p class="view"><a href="https://github.com/catshirt/subhub">View the Project on GitHub <small>catshirt/subhub</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/catshirt/subhub/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/catshirt/subhub/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/catshirt/subhub">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>subhub</h1>
+
+<p>subhub is a simple node.js interface for subscribing to a pubsubhubbub hub. subhub includes a library for integrating into your existing node.js servers, as well as a simple command line tool for debugging hub output.</p>
+
+<h2>using the api</h2>
+
+<p>subhub provides a simple library for integrating a subhub connection into your existing node.js, connect, or express http servers.</p>
+
+<h3>installation</h3>
+
+<pre><code>$ npm install subhub
+</code></pre>
+
+<h3>usage</h3>
+
+<p>to use the api, you simply need to configure a subhub instance, tell your server to use it's request handler, and create a subscription. a simple example of this follows.</p>
+
+<pre><code>http = require('http')
+subhub = require('subhub')
+server = do http.createServer
+
+# configure a subhub instance
+firehose = new subhub
+  'url': ''
+  'subscription':
+    'hub.mode': 'subscribe'
+    'hub.verify': 'sync'
+    'hub.callback': ''
+    'hub.topic': ''
+
+# set up the http handlers
+server.on 'request', firehose.requestListener
+server.listen 8000
+
+# 'data' fires for each document sent by the hub
+firehose.on 'data', (doc) -&gt;
+  console.log doc
+
+# send a subscription request
+# (once subscribed, the hub will begin sending data)
+do firehose.subscribe
+</code></pre>
+
+<h2>using the client</h2>
+
+<p>a command line client is provided which simply creates up a subscription and writes all incoming hub entries to stdout. this is the quickest way to see all the data being sent by the hub. the client uses <a href="https://github.com/flatiron/nconf">nconf</a>, allowing you to configure the subscription through command line arguments, environment variables, or flat files (with that order.</p>
+
+<h3>installation</h3>
+
+<pre><code>$ npm install -g subhub
+</code></pre>
+
+<h3>usage</h3>
+
+<pre><code>$ subhub --help
+Usage: subhub 
+
+Arguments:
+  -h, --help                    Help. You're looking at it
+  -c, --config                  Config file                                      [./config.json]
+  --http.port                   Port to run the http server on                   [80]
+  --hub.url                     The url of the hub you are subscribing to
+  --hub.subscription.mode       Request mode                                     [subscribe]
+  --hub.subscription.verify     Hub verification mode                            [sync]
+  --hub.subscription.callback   Your callback URL the hub will send data to
+  --hub.subscription.topic      The feed url of the topic you are subscribing to
+
+$ subhub --hub.url=http://yourhub --hub.subscription.topic=http://yourhub/topic --hub.subscription.callback=http://yourhost/callback
+[stream of messages]
+</code></pre>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/catshirt">catshirt</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-37581591-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
