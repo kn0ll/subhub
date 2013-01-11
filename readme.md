@@ -33,7 +33,7 @@ arbitrary data can be included in `subscription` to send to the server with the 
 - `hub.callback` - the fully qualified domain name for your subscription callback. the hostname should match the name of the host running subhub, but the actual path to the callback can be arbitrary as it's created dynamically
 - `hub.topic` - the feed you want to subscribe to
 
-## API
+## api
 
 ```
 $ npm install node-subhub
@@ -56,3 +56,10 @@ firehose.on('data', function(doc) {
 
 firehose.subscribe();
 ```
+
+## todo
+
+- add nconf support instead of flat file
+- rewrite example to use node http server instead of express
+- change published name from `node-subhub` to `subhub`
+- add unsubscribe method
