@@ -1,25 +1,57 @@
 #!/usr/bin/env node
-var argv = require('optimist').argv;
-if (argv.h) {
+var optimist = require('optimist'),
+  nconf = require('nconf'),
+  argv = optimist.argv;
+
+// define client defaults
+var defaults = {
+  http: {
+    port: 80
+  },
+  hub: {
+    debug: false,
+    subscription: {
+      mode: 'subscribe',
+      verify: 'sync'
+    }
+  }
+};
+
+// show help
+if (argv.h || argv.help) {
   console.log('Usage: subhub', '\n');
   console.log('Arguments:');
-  console.log('  -h Help. You\'re looking at it');
-  console.log('  -c Config file [./config.json]');
-  console.log('  -p Port to run the http server on [8000]');
+  console.log('  -h, --help                    Help. You\'re looking at it');
+  console.log('  -c, --config                  Config file                                      [./config.json]');
+  console.log('  --http.port                   Port to run the http server on                   [' + defaults.http.port + ']');
+  console.log('  --hub.url                     The url of the hub you are subscribing to');
+  console.log('  --hub.debug                   Whether the subhub library should print debug    [false]');
+  console.log('  --hub.subscription.mode       Request mode                                     [' + defaults.hub.subscription['hub.mode'] + ']');
+  console.log('  --hub.subscription.verify     Hub verification mode                            [' + defaults.hub.subscription['hub.verify'] + ']');
+  console.log('  --hub.subscription.callback   Your callback URL the hub will send data to');
+  console.log('  --hub.subscription.topic      The feed url of the topic you are subscribing to');
   process.exit(-1);
 };
 
-var fs = require('fs'),
+// configuration management
+// merges argv into env into file into defaults
+nconf.argv();
+nconf.env();
+nconf.file({ file: argv.c || argv.config || './config.json' });
+nconf.defaults(defaults);
+
+// setup http server
+var http = require('http'),
   _ = require('underscore'),
-  express = require('express'),
   subhub = require('../lib/subhub'),
-  config = JSON.parse(fs.readFileSync(argv.c || (process.cwd() + '/config.json'))),
-  app = express(),
-  firehose = new subhub(config);
+  server = http.createServer(),
+  firehose = new subhub(nconf.get('hub'));
 
-app.use(firehose.middleware());
-app.listen(argv.p || 8000);
+// create http handlers
+server.on('request', firehose.requestListener);
+server.listen(nconf.get('http:port'));
 
+// send all firehose messages to stdout
 firehose.on('data', function(doc) {
   var entries = _(_.flatten([doc.feed.entry]));
   entries.each(function(entry) {
@@ -27,4 +59,5 @@ firehose.on('data', function(doc) {
   });
 });
 
+// subscribe to firehose
 firehose.subscribe();
